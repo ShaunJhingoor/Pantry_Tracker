@@ -1,0 +1,128 @@
+#OusideHome {
+    background-color: #faf0e6;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .paper-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .paper-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+    border: 1px solid #ddd; /* Paper border */
+    position: relative;
+    overflow: hidden;
+  }
+  
+  #title, #description {
+    opacity: 0;
+    animation: writeText 2s forwards;
+  }
+  
+  #title {
+    font-size: 2.5em;
+    margin-bottom: 1rem;
+  }
+  
+  #description {
+    font-size: 1.2em;
+    margin-bottom: 2rem;
+    color: #333;
+    animation-delay: 1s;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  #sign-up-button, #login-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    animation: writeText 4s forwards;
+  }
+  
+  #sign-up-button {
+    background-color: #4caf50; /* Green */
+    color: white;
+  }
+  
+  #login-button {
+    background-color: #008cba; /* Blue */
+    color: white;
+  }
+  
+  #sign-up-button:hover, #login-button:hover {
+    opacity: 0.8;
+  }
+  
+  /* Animation for writing effect */
+  @keyframes writeText {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+/* Home.css */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; 
+  }
+  
+  .modal-content {
+    position: relative;
+    background-color: transparent; 
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+  }
+  
+  .close-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent; /* Transparent background for the button */
+    border: none;
+    color: #f44336; /* Red color */
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+  }
+  
+  .close-modal:hover {
+    color: #d32f2f; /* Darker red color on hover */
+    transform: scale(1.1); /* Slightly enlarge on hover */
+  }
+  
