@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./LoginPage.css"; 
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import {auth} from "../firebase/config"
 
 function LoginPage({ onClose }) {
@@ -23,6 +23,12 @@ function LoginPage({ onClose }) {
         console.log(errorMessage)
     });
   };
+
+  const handlePasswordReset = () => {
+    const email = prompt('Please Enter Email')
+    sendPasswordResetEmail(auth,email)
+    alert('Email sent. Check indox for password reset')
+  }
 
   return (
     <div className="login-container">
@@ -60,6 +66,7 @@ function LoginPage({ onClose }) {
         <div id="submitButton">
         <button type="submit" className="submit-button">Submit</button>
         </div>
+        <p id="resetButton" onClick={handlePasswordReset}>Forgot Password</p>
       </form>
     </div>
   );

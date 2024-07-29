@@ -68,4 +68,17 @@
   .submit-button:hover {
     background-color: #45a049;
   }
+
+  #resetButton{
+    text-align: center;
+    font-size: .8rem;
+    color: rgb(2, 2, 187);
+    cursor: pointer;
+    text-decoration: underline;
+    transition: font-size 0.3s ease;
+  }
+
+  #resetButton:hover {
+    font-size: 0.9rem;
+  }
   

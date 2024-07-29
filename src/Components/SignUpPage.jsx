@@ -26,6 +26,8 @@ function SignUpPage({ onClose }) {
     })
   };
 
+
+
   return (
     <div className="signup-container">
       <button className="close-modal" onClick={onClose}>X</button>
