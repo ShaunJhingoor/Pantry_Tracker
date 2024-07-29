@@ -3,19 +3,16 @@ import "./LoginPage.css";
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import {auth} from "../firebase/config"
 
+
 function LoginPage({ onClose }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error,setError] = useState("")
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-    
-        const user = userCredential.user;
-      console.log(user)
-    })
+
     .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;

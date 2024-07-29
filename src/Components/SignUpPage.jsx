@@ -4,25 +4,22 @@ import "./SignUpPage.css";
 import {auth} from "../firebase/config"
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
+
+
 function SignUpPage({ onClose }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("")
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
     createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed up 
-      const user = userCredential.user;
-    //   console.log(user)
-      // ...
-    })
+
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
       setError("Invalid Email or Password")
-      // ..
     })
   };
 
