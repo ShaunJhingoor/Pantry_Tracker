@@ -6,7 +6,6 @@ function Home(){
         <div id="ProduceSection">
         <Header/>
        <ListPantryItems/>
-        <h1 style={{ fontSize: '5rem', color: 'red' }}>Hi</h1>
         </div>
       
     )
