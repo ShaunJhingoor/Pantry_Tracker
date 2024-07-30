@@ -164,13 +164,13 @@ function ListPantryItems() {
     <div className="containerPantryList">
       <h1 id="PantryHeader">{animateText("Pantry Items")}</h1>
       <div className="filter-buttons">
-        <button onClick={() => setFilter("all")} className="filter-button">All</button>
-        <button onClick={() => setFilter("expired")} className="filter-button-expired-button" onMouseEnter={() => setShowIcon1(true)}
+        <button onClick={() => setFilter("all")} className={`filter-button ${filter === "all" ? "active" : ""}`}>All</button>
+        <button onClick={() => setFilter("expired")} className={`filter-button filter-button-expired-button ${filter === "expired" ? "active" : ""}`}  onMouseEnter={() => setShowIcon1(true)}
         onMouseLeave={() => setShowIcon1(false)}>
         <span className="button-text">Expired</span>
          <i className="fas fa-trash-alt button-icon"></i>
         </button>
-        <button onClick={() => setFilter("expiring")} className="filter-button">Expiring in 30 Days</button>
+        <button onClick={() => setFilter("expiring")} className={`filter-button ${filter === "expiring" ? "active" : ""}`}>Expiring 30 Days</button>
     </div>
       <button 
         onClick={() => setShowModal(true)} 

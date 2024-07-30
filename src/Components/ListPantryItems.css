@@ -97,15 +97,16 @@
     background-color: #2C3E50;
     color: white;
     border: none;
-    padding: 1rem 2rem;
-    border-radius: 4px;
+    padding: 1.2rem 3rem;
+    border-radius: 8px;
     cursor: pointer;
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
+    font-weight: bold;
     justify-content: center;
-    font-size: .8rem;
+    font-size: 1rem;
     margin-bottom: 1rem;
   }
   
@@ -275,6 +276,7 @@
     align-items: center; /* Center buttons vertically */
     gap: 1rem; /* Reduced gap for better spacing */
     margin-bottom: 2rem;
+    flex-wrap: nowrap
 }
 
 /* General Filter Button Styling */
@@ -282,7 +284,7 @@
     background-color: #3d5770;
     color: white;
     border: none;
-    padding: 0.5rem 1.5rem; /* Adjusted padding for better button size */
+    padding: 0.5rem 1rem; /* Adjusted padding for better button size */
     border-radius: 6px; /* Slightly larger border radius for a softer look */
     cursor: pointer;
     position: relative;
@@ -291,6 +293,7 @@
     font-size: 1rem; /* Adjusted font size for better readability */
     font-weight: bold; /* Bold text for better emphasis */
 }
+
 
 /* Hover Effect for Filter Buttons */
 .filter-button:hover {
@@ -303,7 +306,7 @@
     background-color: #3d5770;
     color: white;
     border: none;
-    padding: 1.1rem 2.5rem; /* Larger padding for better appearance */
+    padding: 1rem 2.5rem; /* Larger padding for better appearance */
     border-radius: 6px; /* Consistent border radius */
     cursor: pointer;
     position: relative;
@@ -355,4 +358,9 @@
     opacity: 0;
     font-size: 1.5rem; /* Larger icon for better visibility */
     transform: scale(1.2);
+}
+
+.filter-button.active {
+    background-color: #398bde; /* Darker color for active button */
+    color: #ffffff;
 }
