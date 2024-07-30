@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { collection, query, getDocs, doc, setDoc, deleteDoc, getDoc } from "firebase/firestore";
+import { collection, query, getDocs, doc, setDoc, deleteDoc, getDoc, where } from "firebase/firestore";
 import { firestore } from "../firebase/config";
-import './ListPantryItems.css'; // Import the CSS file
+import './ListPantryItems.css'; 
 import { useSelector } from 'react-redux';
 import { selectUser } from "../store/usersSlice"; 
 
@@ -12,6 +12,10 @@ function ListPantryItems() {
   const [newItemUnit, setNewItemUnit] = useState("Unit");
   const [units, setUnits] = useState(["Unit", "kg", "g", "L", "ml"]); // Default units
   const [showModal, setShowModal] = useState(false);
+  const [newItemExpiration, setNewItemExpiration] = useState("")
+  const [showIcon, setShowIcon] = useState(false);
+  const [showIcon1, setShowIcon1] = useState(false);
+  const [filter, setFilter] = useState("all");
 
   const currentUser = useSelector(selectUser);
 
@@ -32,40 +36,78 @@ function ListPantryItems() {
     console.log(currentUser.currentUser)
   }, [currentUser]);
 
-  const addItem = async (item, quantity, unit) => {
-    const docRef = doc(collection(firestore, 'Users', currentUser.currentUser.id, 'Pantry'), item);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      const { count } = docSnap.data();
-      await setDoc(docRef, { count: count + quantity, unit });
-    } else {
-      await setDoc(docRef, { count: quantity, unit });
+  
+  const addItem = async (item, quantity, unit, expiration) => {
+    try {
+      const pantryCollectionRef = collection(firestore, 'Users', currentUser.currentUser.id, 'Pantry');
+      
+      // Ensure quantity is a number
+      const quantityNumber = Number(quantity);
+      if (isNaN(quantityNumber)) {
+        console.error("Invalid quantity value:", quantity);
+        return;
+      }
+  
+      // Use a combination of item name and unit to create a unique ID
+      const docId = `${item.toLowerCase()}_${unit.toLowerCase()}_${expiration.toLowerCase()}`;
+  
+      
+      const q = query(pantryCollectionRef, where("__name__", "==", docId));
+      const snapshot = await getDocs(q);
+  
+      if (!snapshot.empty) {
+        const docSnap = snapshot.docs[0];
+        const docRef = docSnap.ref;
+        const data = docSnap.data();
+        const currentCount = Number(data.count) || 0;
+        const newCount = currentCount + quantityNumber;
+  
+        await setDoc(docRef, { count: newCount, expiration }, { merge: true });
+      } else {
+        await setDoc(doc(pantryCollectionRef, docId), { name: item, count: quantityNumber, unit, expiration });
+      }
+  
+      // Reset state and close modal
+      setNewItemName("");
+      setNewItemQuantity(1);
+      setNewItemUnit("Unit");
+      setNewItemExpiration("")
+      setShowModal(false);
+  
+      // Refresh the pantry items
+      await readPantry();
+    } catch (error) {
+      console.error("Error adding item:", error);
     }
-
-    setNewItemName("");
-    setNewItemQuantity(1);
-    setNewItemUnit("Unit");
-    setShowModal(false);
-    await readPantry();
   };
+  
+
 
   const removeItem = async (item) => {
-    const docRef = doc(collection(firestore, 'Users', currentUser.uid, 'Pantry'), item);
-    const docSnap = await getDoc(docRef);
+    try {
+      const docRef = doc(collection(firestore, 'Users', currentUser.currentUser.id, 'Pantry'), item);
 
-    if (docSnap.exists()) {
-      const { count } = docSnap.data();
-      if (count === 1) {
-        await deleteDoc(docRef);
+      const docSnap = await getDoc(docRef);
+  
+      if (docSnap.exists()) {
+        const { count } = docSnap.data();
+  
+        if (count === 1) {
+          await deleteDoc(docRef);
+        } else {
+          await setDoc(docRef, { count: count - 1 }, { merge: true });
+        }
+  
+        // Refresh the pantry items
+        await readPantry();
       } else {
-        await setDoc(docRef, { count: count - 1 });
+        console.log("Document does not exist.");
       }
+    } catch (error) {
+      console.error("Error removing item:", error);
     }
-
-    await readPantry();
   };
-
+  
   const handleAddUnit = () => {
     const newUnit = prompt("Enter the new unit:");
     if (newUnit && !units.includes(newUnit)) {
@@ -73,21 +115,83 @@ function ListPantryItems() {
       setNewItemUnit(newUnit);
     }
   };
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  const animateText = (text) => {
+    const words = text.split(' ');
+    return words.map((word, wordIndex) => (
+      <span key={wordIndex} className="word" style={{ animationDelay: `${wordIndex * 0.5}s` }}>
+        {word.split('').map((char, index) => (
+          <span key={index} style={{ animationDelay: `${(wordIndex * word.length + index) * 0.05}s` }}>
+            {char}
+          </span>
+        ))}
+      </span>
+    ));
+  };
+
+  const todayDate = new Date().toISOString().split('T')[0];
+
+  const handleDateChange = (e) => {
+    const selectedDate = e.target.value;
+    setNewItemExpiration(selectedDate);
+  };
+
+  const formatDate = (dateString) => {
+    // Split the date string into components
+    const [year, month, day] = dateString.split('-')
+    return `${month}/${day}/${year.slice(2)}`
+  };
+
+  const filteredItems = pantryItems.filter((item) => {
+    if (filter === "expired") {
+      return item.expiration && new Date(item.expiration) < new Date();
+    }
+    if (filter === "expiring") {
+      const today = new Date();
+      const expiryDate = new Date(item.expiration);
+      const timeDiff = expiryDate - today;
+      const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+      return daysDiff <= 30 && daysDiff > 0;
+    }
+    return true; // Default to showing all items
+  });
+
 
   return (
     <div className="containerPantryList">
-      <h1>Pantry Items</h1>
-      <button onClick={() => setShowModal(true)} className="add-item-button">Add Item</button>
+      <h1 id="PantryHeader">{animateText("Pantry Items")}</h1>
+      <div className="filter-buttons">
+        <button onClick={() => setFilter("all")} className="filter-button">All</button>
+        <button onClick={() => setFilter("expired")} className="filter-button-expired-button" onMouseEnter={() => setShowIcon1(true)}
+        onMouseLeave={() => setShowIcon1(false)}>
+        <span className="button-text">Expired</span>
+         <i className="fas fa-trash-alt button-icon"></i>
+        </button>
+        <button onClick={() => setFilter("expiring")} className="filter-button">Expiring in 30 Days</button>
+    </div>
+      <button 
+        onClick={() => setShowModal(true)} 
+        className="add-item-button"
+        onMouseEnter={() => setShowIcon(true)}
+        onMouseLeave={() => setShowIcon(false)}
+        >
+        <span className="button-text">Add Item</span>
+        <i className="fas fa-shopping-cart button-icon"></i>
+      </button>
       <div className="pantry-list-container">
         <div className="list-header">
           <div className="header-item">Item</div>
           <div className="header-quantity">Quantity</div>
         </div>
         <ul id="pantry-list">
-          {pantryItems.map((item) => (
+          {filteredItems.map((item) => (
             <li key={item.id} className="pantry-list-item">
-              <div className="item-name">{item.id}</div>
+              <div className="item-name">{capitalizeFirstLetter(item.id.split('_')[0])}</div>
               <div className="item-quantity">{item.count || 1} {item.unit || 'Unit'}</div>
+              <div className="item-expiration">{item.expiration ? `Expires on: ${formatDate(item.expiration)}` : 'No expiration date'}</div>
               <button className="remove-button" onClick={() => removeItem(item.id)}>Remove</button>
             </li>
           ))}
@@ -104,6 +208,13 @@ function ListPantryItems() {
               onChange={(e) => setNewItemName(e.target.value)}
               placeholder="Item name"
               id="new-item-name-input"
+            />
+            <input
+                type="date"
+                value={newItemExpiration}
+                onChange={handleDateChange}
+                id="new-item-expiration-input"
+                min={todayDate}
             />
             <div id="unit-section">
             <input
@@ -126,7 +237,7 @@ function ListPantryItems() {
             <button onClick={handleAddUnit} id="addUnitButton">Add Unit</button>
             </div>
             <div id="buttonsForModal">
-              <button onClick={() => addItem(newItemName, newItemQuantity, newItemUnit)} id="addItemButton">Add</button>
+              <button onClick={() => addItem(newItemName, newItemQuantity, newItemUnit, newItemExpiration)} id="addItemButton">Add</button>
               <button onClick={() => setShowModal(false)} id="closeItemButton">Close</button>
             </div>
           </div>

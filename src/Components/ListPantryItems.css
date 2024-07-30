@@ -19,7 +19,32 @@
     overflow-y: auto; /* Add vertical scroll */
     position: relative;
 }
+/* Head Name */
+#PantryHeader {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    overflow: hidden; /* Ensures that only the visible portion of the text is shown */
+    display: inline-block;
+  }
+  
+  #PantryHeader span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s forwards;
+  }
 
+  #PantryHeader .word {
+    display: inline-block;
+    margin-right: 0.5rem; /* Adjust the margin between words */
+  }
+  
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 /* Header of the Pantry List */
 .list-header {
     display: flex;
@@ -67,19 +92,60 @@
 }
 
 /* Add Item Button */
+
 .add-item-button {
-    background-color: #3498db;
+    background-color: #2C3E50;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 1rem 2rem;
     border-radius: 4px;
     cursor: pointer;
-    margin-bottom: 20px;
-}
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .8rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* Text and Icon Styles */
+  .button-text,
+  .button-icon {
+    position: absolute;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  /* Initial State */
+  .button-text {
+    opacity: 1;
+    z-index: 1; /* Ensure text is above the icon */
+  }
+  
+  .button-icon {
+    opacity: 0;
+    font-size: 1.2rem;
+    transform: scale(1.2);
+  }
+  
+  /* Hover State */
+  .add-item-button:hover .button-text {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  
+  .add-item-button:hover .button-icon {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  /* Ensure button text and icon are centered */
+  .add-item-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-.add-item-button:hover {
-    background-color: #2980b9;
-}
 
 /* Modal Background */
 .modalpantry {
@@ -119,8 +185,9 @@
 }
 
 /* Add Unit Button */
+
 #addUnitButton {
-    background-color: #3498db;
+    background-color: #3d5770;
     color: white;
     border: none;
     /* padding: 0.5rem; */
@@ -128,18 +195,19 @@
     cursor: pointer;
     width: 10rem;
     height: 2rem;
+    border-radius: 8px;
     transition: transform 0.3s ease, background-color 0.3s ease;
     font-size: .8rem;
 }
 
 #addUnitButton:hover {
-    background-color: #2980b9;
+    background-color: #486785;
     transform: scale(1.05);
 }
 
 /* Add Item Button */
 #addItemButton {
-    background-color: #3498db;
+    background-color: #3d5770;
     color: white;
     border: none;
     padding: 0.5rem;
@@ -150,7 +218,7 @@
 }
 
 #addItemButton:hover {
-    background-color: #2980b9;
+    background-color: #486785;
     transform: scale(1.05);
 }
 
@@ -182,6 +250,7 @@
 #modalHeader {
     margin-bottom: 1rem;
     font-size: 1.5rem; 
+    color: rgb(52, 66, 95);
 }
 
 #unit-section{
@@ -197,4 +266,93 @@
 
 #new-item-unit-select{
     text-align: center;
+}
+
+/* Filter Button Styles */
+.filter-buttons {
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    align-items: center; /* Center buttons vertically */
+    gap: 1rem; /* Reduced gap for better spacing */
+    margin-bottom: 2rem;
+}
+
+/* General Filter Button Styling */
+.filter-button {
+    background-color: #3d5770;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.5rem; /* Adjusted padding for better button size */
+    border-radius: 6px; /* Slightly larger border radius for a softer look */
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 1rem; /* Adjusted font size for better readability */
+    font-weight: bold; /* Bold text for better emphasis */
+}
+
+/* Hover Effect for Filter Buttons */
+.filter-button:hover {
+    background-color: #486785;
+    transform: scale(1.05);
+}
+
+/* Expired Button Styling */
+.filter-button-expired-button {
+    background-color: #3d5770;
+    color: white;
+    border: none;
+    padding: 1.1rem 2.5rem; /* Larger padding for better appearance */
+    border-radius: 6px; /* Consistent border radius */
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 1rem; /* Consistent font size */
+    font-weight: bold; /* Bold text */
+}
+
+/* Hover Effect for Expired Button */
+.filter-button-expired-button:hover {
+    background-color: #486785;
+    transform: scale(1.05);
+}
+
+/* Text and Icon Styles */
+.button-text,
+.button-icon {
+    position: absolute;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Initial State */
+.button-text {
+    opacity: 1;
+    z-index: 1; /* Ensure text is above the icon */
+}
+
+/* Hover State */
+.filter-button-expired-button:hover .button-text {
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.filter-button-expired-button:hover .button-icon {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Ensure button text and icon are centered */
+.filter-button,
+.filter-button-expired-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Button Icon Styling */
+.button-icon {
+    opacity: 0;
+    font-size: 1.5rem; /* Larger icon for better visibility */
+    transform: scale(1.2);
 }

@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import store from './store/store.js'
 import firebaseConfig from './firebase/config.js'
 import { FirebaseAppProvider } from 'reactfire'
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
