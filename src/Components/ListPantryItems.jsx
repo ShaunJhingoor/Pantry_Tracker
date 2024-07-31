@@ -16,7 +16,7 @@ function ListPantryItems() {
   const [showIcon, setShowIcon] = useState(false);
   const [showIcon1, setShowIcon1] = useState(false);
   const [filter, setFilter] = useState("all");
-
+  const [editingItem, setEditingItem] = useState(null);
   const currentUser = useSelector(selectUser);
 
   const readPantry = async () => {
@@ -36,12 +36,18 @@ function ListPantryItems() {
     console.log(currentUser.currentUser)
   }, [currentUser]);
 
-  
+  const resetModalState = () => {
+    setNewItemName("");
+    setNewItemQuantity(1);
+    setNewItemUnit("Unit");
+    setNewItemExpiration("");
+    setEditingItem(null);
+  };
   const addItem = async (item, quantity, unit, expiration) => {
     try {
       const pantryCollectionRef = collection(firestore, 'Users', currentUser.currentUser.id, 'Pantry');
       
-      // Ensure quantity is a number
+      
       const quantityNumber = Number(quantity);
       if (isNaN(quantityNumber)) {
         console.error("Invalid quantity value:", quantity);
@@ -68,10 +74,7 @@ function ListPantryItems() {
       }
   
       // Reset state and close modal
-      setNewItemName("");
-      setNewItemQuantity(1);
-      setNewItemUnit("Unit");
-      setNewItemExpiration("")
+      resetModalState()
       setShowModal(false);
   
       // Refresh the pantry items
@@ -81,8 +84,54 @@ function ListPantryItems() {
     }
   };
   
-
-
+  const editItem = async (itemId, newName, newQuantity, newUnit, newExpiration) => {
+    try {
+      const pantryCollectionRef = collection(firestore, 'Users', currentUser.currentUser.id, 'Pantry');
+      const quantityNumber = Number(newQuantity);
+  
+      if (isNaN(quantityNumber) || quantityNumber <= 0) {
+        console.error("Invalid quantity value:", newQuantity);
+        return;
+      }
+      
+      const q = query(pantryCollectionRef, where("__name__", "==", itemId.id)); 
+    
+      const snapshot = await getDocs(q);
+    
+      
+        const docSnap = snapshot.docs[0];
+     
+        const docRef = docSnap.ref;
+        const data = docSnap.data();
+        console.log(data)
+        const originalDocId = data.originalDocId; 
+        
+        const newDocId = `${newName.toLowerCase()}_${newUnit.toLowerCase()}_${newExpiration.toLowerCase()}`;
+        console.log(newName)
+        
+        await setDoc(docRef, { 
+            count: quantityNumber, 
+            unit: newUnit, 
+            expiration: newExpiration,
+            name: newName,
+            originalDocId: newDocId
+          }, { merge: true });
+     
+  
+      // Reset state and close modal
+      resetModalState()
+      setShowModal(false);
+      // Refresh the pantry items
+      await readPantry();
+    } catch (error) {
+      console.error("Error editing item:", error);
+    } finally {
+      // Ensure editingItem is cleared regardless of success or failure
+      resetModalState()
+      setShowModal(false);
+    }
+  };
+  
   const removeItem = async (item) => {
     try {
       const docRef = doc(collection(firestore, 'Users', currentUser.currentUser.id, 'Pantry'), item);
@@ -90,15 +139,7 @@ function ListPantryItems() {
       const docSnap = await getDoc(docRef);
   
       if (docSnap.exists()) {
-        const { count } = docSnap.data();
-  
-        if (count === 1) {
-          await deleteDoc(docRef);
-        } else {
-          await setDoc(docRef, { count: count - 1 }, { merge: true });
-        }
-  
-        // Refresh the pantry items
+        await deleteDoc(docRef);
         await readPantry();
       } else {
         console.log("Document does not exist.");
@@ -159,7 +200,15 @@ function ListPantryItems() {
     return true; // Default to showing all items
   });
 
-
+  const handleEditClick = (item) => {
+    setNewItemName(item.name);
+    setNewItemQuantity(item.count || 1); // Ensure this is a number
+    setNewItemUnit(item.unit || "Unit");
+    setNewItemExpiration(item.expiration || "");
+    setEditingItem(item); // Set the item being edited
+    setShowModal(true);
+  };
+  
   return (
     <div className="containerPantryList">
       <h1 id="PantryHeader">{animateText("Pantry Items")}</h1>
@@ -189,9 +238,10 @@ function ListPantryItems() {
         <ul id="pantry-list">
           {filteredItems.map((item) => (
             <li key={item.id} className="pantry-list-item">
-              <div className="item-name">{capitalizeFirstLetter(item.id.split('_')[0])}</div>
+              <div className="item-name">{capitalizeFirstLetter(item.name)}</div>
               <div className="item-quantity">{item.count || 1} {item.unit || 'Unit'}</div>
               <div className="item-expiration">{item.expiration ? `Expires on: ${formatDate(item.expiration)}` : 'No expiration date'}</div>
+              <p className="edit-button" onClick={() => handleEditClick(item)}><i className="fas fa-pencil-alt"></i></p>
               <button className="remove-button" onClick={() => removeItem(item.id)}>Remove</button>
             </li>
           ))}
@@ -200,14 +250,14 @@ function ListPantryItems() {
 
       {showModal && (
         <div className="modalpantry">
-          <div className="modal-content-pantry">
-            <h2 id="modalHeader">Add Item</h2>
+            <div className="modal-content-pantry">
+            <h2 id="modalHeader">{editingItem ? "Edit Item" : "Add Item"}</h2>
             <input
-              type="text"
-              value={newItemName}
-              onChange={(e) => setNewItemName(e.target.value)}
-              placeholder="Item name"
-              id="new-item-name-input"
+                type="text"
+                value={newItemName}
+                onChange={(e) => setNewItemName(e.target.value)}
+                placeholder="Item name"
+                id="new-item-name-input"
             />
             <input
                 type="date"
@@ -218,31 +268,53 @@ function ListPantryItems() {
             />
             <div id="unit-section">
             <input
-              type="number"
-              value={newItemQuantity}
-              onChange={(e) => setNewItemQuantity(e.target.value)}
-              placeholder="Quantity"
-              min="1"
-              id="new-item-quantity-input"
-            />
-            <select
-              value={newItemUnit}
-              onChange={(e) => setNewItemUnit(e.target.value)}
-              id="new-item-unit-select"
-            >
-              {units.map((unit, index) => (
-                <option key={index} value={unit}>{unit}</option>
-              ))}
-            </select>
-            <button onClick={handleAddUnit} id="addUnitButton">Add Unit</button>
+                type="number"
+                value={newItemQuantity}
+                onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value)) { 
+                    setNewItemQuantity(value);
+                    }
+                }}
+                placeholder="Quantity"
+                min="1"
+                id="new-item-quantity-input"
+                />
+                <select
+                value={newItemUnit}
+                onChange={(e) => setNewItemUnit(e.target.value)}
+                id="new-item-unit-select"
+                >
+                {units.map((unit, index) => (
+                    <option key={index} value={unit}>{unit}</option>
+                ))}
+                </select>
+                <button onClick={handleAddUnit} id="addUnitButton">Add Unit</button>
             </div>
             <div id="buttonsForModal">
-              <button onClick={() => addItem(newItemName, newItemQuantity, newItemUnit, newItemExpiration)} id="addItemButton">Add</button>
-              <button onClick={() => setShowModal(false)} id="closeItemButton">Close</button>
+                <button
+                onClick={() => {
+                    if (editingItem) {
+                    editItem(editingItem,newItemName, newItemQuantity, newItemUnit, newItemExpiration);
+                    } else {
+                    addItem(newItemName, newItemQuantity, newItemUnit, newItemExpiration);
+                    }
+                }}
+                id="addItemButton"
+                >
+                {editingItem ? "Save Changes" : "Add"}
+                </button>
+                <button onClick={() =>  {
+                    resetModalState();
+                    setShowModal(false);
+                }} id="closeItemButton">
+                    Close
+                </button>
             </div>
-          </div>
+            </div>
         </div>
-      )}
+        )}
+
     </div>
   );
 }

@@ -48,7 +48,7 @@
 /* Header of the Pantry List */
 .list-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: baseline;
     font-weight: bold;
     border-bottom: 2px solid #ddd;
     padding-bottom: 10px;
@@ -57,8 +57,8 @@
 
 /* Header Items and Quantity */
 .header-item, .header-quantity {
-    width: 48%; /* Adjust width for better alignment */
-    text-align: left;
+    width: 34vw; /* Adjust width for better alignment */
+ 
     box-sizing: border-box; /* Ensure padding and border are included in width */
 }
 
@@ -73,7 +73,7 @@
 
 /* Item Name and Quantity */
 .item-name, .item-quantity {
-    width: 48%; /* Match header width */
+    width: 100%; /* Match header width */
     box-sizing: border-box; /* Ensure padding and border are included in width */
 }
 
@@ -363,4 +363,21 @@
 .filter-button.active {
     background-color: #398bde; /* Darker color for active button */
     color: #ffffff;
+}
+
+.edit-button{
+    margin: 0 1rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.edit-button:hover .fa-pencil-alt {
+    transform: scale(1.2); 
+}
+
+@media (max-width: 600px) {
+    .header-item, .header-quantity{
+        width: 15vw;
+        font-size: .9rem;
+    }
 }
