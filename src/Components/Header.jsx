@@ -17,7 +17,8 @@ function Header(){
     }
     return(
         <div id="headerContainer">
-            <button onClick={handleSignOut}>LogOut</button>
+            <h1 id="pantrytrackerheader">Pantry Tracker <i class="fas fa-clipboard-list"></i></h1>
+            <button onClick={handleSignOut} id="logoutButton"><p id="logoutButtonText">Logout  <i class="fa-solid fa-power-off"></i></p> </button>
         </div>
     )
 }

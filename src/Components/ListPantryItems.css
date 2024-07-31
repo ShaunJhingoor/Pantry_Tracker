@@ -69,6 +69,7 @@
     align-items: center;
     padding: 10px 0;
     border-bottom: 1px solid #ddd;
+    font-size: 1.1rem;
 }
 
 /* Item Name and Quantity */
@@ -82,7 +83,7 @@
     background-color: #e74c3c;
     color: white;
     border: none;
-    padding: 5px 10px;
+    padding: .4rem .8rem;
     border-radius: 4px;
     cursor: pointer;
 }
@@ -374,6 +375,10 @@
 .edit-button:hover .fa-pencil-alt {
     transform: scale(1.2); 
 }
+
+/* #item-expiration{
+    font-size: 20rem;
+} */
 
 @media (max-width: 600px) {
     .header-item, .header-quantity{

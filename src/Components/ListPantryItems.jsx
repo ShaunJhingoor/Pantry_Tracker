@@ -240,7 +240,7 @@ function ListPantryItems() {
             <li key={item.id} className="pantry-list-item">
               <div className="item-name">{capitalizeFirstLetter(item.name)}</div>
               <div className="item-quantity">{item.count || 1} {item.unit || 'Unit'}</div>
-              <div className="item-expiration">{item.expiration ? `Expires on: ${formatDate(item.expiration)}` : 'No expiration date'}</div>
+              <div className="item-expiration">{item.expiration ? `Expires: ${formatDate(item.expiration)}` : 'No expiration date'}</div>
               <p className="edit-button" onClick={() => handleEditClick(item)}><i className="fas fa-pencil-alt"></i></p>
               <button className="remove-button" onClick={() => removeItem(item.id)}>Remove</button>
             </li>
