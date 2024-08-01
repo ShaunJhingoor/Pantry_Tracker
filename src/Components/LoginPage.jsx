@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./LoginPage.css"; 
 import { signInWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider  } from "firebase/auth";
 import {auth} from "../firebase/config"
-import { useEffect } from "react";
 
 
 function LoginPage({ onClose }) {
@@ -23,31 +22,21 @@ function LoginPage({ onClose }) {
     });
   };
 
+  const handleGoogle = (e) => {
+    e.preventDefault();
 
-const handleGoogle = (e) => {
-  e.preventDefault();
-
-  signInWithRedirect(auth, provider);
-};
-
-// In your component or app initialization, handle the result after redirect
-useEffect(() => {
-  getRedirectResult(auth)
-    .then((result) => {
-      if (result) {
+    signInWithPopup(auth, provider)
+      .then((result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         const user = result.user;
-        // Handle user and token
-      }
-    }).catch((error) => {
-      // Handle Errors here.
-      const errorMessage = error.message;
-      console.error("Google Sign-In Error:", errorMessage);
-      setError("Google Sign-In Error");
-    });
-}, []);
-
+      }).catch((error) => {
+        // Handle Errors here.
+        const errorMessage = error.message;
+        console.error("Google Sign-In Error:", errorMessage);
+        setError("Google Sign-In Error");
+      });
+  };
 
   const handlePasswordReset = () => {
     const email = prompt('Please Enter Email')
