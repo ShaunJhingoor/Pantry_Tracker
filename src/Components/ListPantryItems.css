@@ -57,7 +57,7 @@
 
 /* Header Items and Quantity */
 .header-item, .header-quantity {
-    width: 34vw; /* Adjust width for better alignment */
+    width: 33vw; /* Adjust width for better alignment */
  
     box-sizing: border-box; /* Ensure padding and border are included in width */
 }
@@ -80,16 +80,17 @@
 
 /* Remove Button */
 .remove-button {
-    background-color: #e74c3c;
-    color: white;
+    color: #e74c3c;
+    background-color: inherit;
     border: none;
     padding: .4rem .8rem;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 1rem;
 }
 
 .remove-button:hover {
-    background-color: #c0392b;
+    color: #c0392b;
 }
 
 /* Add Item Button */
@@ -98,7 +99,7 @@
     background-color: #2C3E50;
     color: white;
     border: none;
-    padding: 1.2rem 3rem;
+    padding: 1rem 3rem;
     border-radius: 8px;
     cursor: pointer;
     position: relative;
@@ -109,6 +110,7 @@
     justify-content: center;
     font-size: 1rem;
     margin-bottom: 1rem;
+    z-index: 0;
   }
   
   /* Text and Icon Styles */
@@ -145,11 +147,7 @@
   }
   
   /* Ensure button text and icon are centered */
-  .add-item-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  
 
 
 /* Modal Background */
@@ -177,7 +175,18 @@
     flex-direction: column;
     align-items: center;
 }
-
+#openCameraButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #068196; /* Custom color for the icon */
+    font-size: 1.5rem; /* Adjust size as needed */
+  }
+  
+  #openCameraButton:hover {
+    color: #089ab4; /* Darker color on hover */
+  }
+  
 /* Input and Select Styling in Modal */
 .modal-content-pantry input,
 .modal-content-pantry select {
@@ -218,7 +227,7 @@
     padding: 0.5rem;
     border-radius: 4px;
     cursor: pointer;
-    margin-right: 10px; /* Adjust margin for button alignment */
+    margin-right: 10px; 
     transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
@@ -316,7 +325,8 @@
     position: relative;
     transition: background-color 0.3s ease, transform 0.3s ease;
     font-size: 1rem; /* Consistent font size */
-    font-weight: bold; /* Bold text */
+    font-weight: bold;
+    z-index: 0;
 }
 
 /* Hover Effect for Expired Button */
@@ -370,7 +380,7 @@
 }
 
 .edit-button{
-    margin: 0 1rem;
+    margin: 0 2rem;
     cursor: pointer;
     transition: transform 0.3s ease;
 }
@@ -385,7 +395,7 @@
 
 @media (max-width: 600px) {
     .header-item, .header-quantity{
-        width: 15vw;
+        width: 12vw;
         font-size: .9rem;
     }
 }

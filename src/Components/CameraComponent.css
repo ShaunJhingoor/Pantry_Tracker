@@ -1,0 +1,60 @@
+.camera-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Dark background for the modal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .camera-container {
+    position: relative;
+    width: 300px;
+    height: 400px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+  }
+  
+  .camera-buttons {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+  }
+  
+  .capture-button {
+    padding: 10px 20px;
+    border: none;
+    background: #10B4D0;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .capture-button:hover {
+    background: #0e8c99;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 24px; /* Larger font size for better visibility */
+    color: red;
+    cursor: pointer;
+    font-weight: bold; /* Make the "X" bold */
+  }
+  
+  .close-button:hover {
+    color: darkred;
+  }
+  

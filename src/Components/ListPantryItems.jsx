@@ -4,19 +4,21 @@ import { firestore } from "../firebase/config";
 import './ListPantryItems.css'; 
 import { useSelector } from 'react-redux';
 import { selectUser } from "../store/usersSlice"; 
-// import OpenAI from "openai";
-// const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-// if (!apiKey) {
-//   console.error("Error: OPENAI_API_KEY environment variable is missing or empty.");
-// }
+import OpenAI from "openai";
+import CameraComponent from "./CameraComponent";
 
-// const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
+const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+if (!apiKey) {
+  console.error("Error: OPENAI_API_KEY environment variable is missing or empty.");
+}
+
+const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
 function ListPantryItems() {
   const [pantryItems, setPantryItems] = useState([]);
   const [newItemName, setNewItemName] = useState("");
   const [newItemQuantity, setNewItemQuantity] = useState(1);
   const [newItemUnit, setNewItemUnit] = useState("Unit");
-  const [units, setUnits] = useState(["Unit", "kg", "g", "L", "ml"]); // Default units
+  const [units, setUnits] = useState(["Unit", "kg", "g", "L", "ml"]); 
   const [showModal, setShowModal] = useState(false);
   const [newItemExpiration, setNewItemExpiration] = useState("")
   const [showIcon, setShowIcon] = useState(false);
@@ -24,87 +26,45 @@ function ListPantryItems() {
   const [filter, setFilter] = useState("all");
   const [editingItem, setEditingItem] = useState(null);
   const currentUser = useSelector(selectUser);
+  const [showCamera, setShowCamera] = useState(false);
+  const [capturedImage, setCapturedImage] = useState(null);
 
-
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  // //   
-  // //     const completion = await openai.chat.completions.create({
-  // //       model: "gpt-3.5-turbo",
-  // //       messages: [
-  // //         { 
-  // //           role: "user", 
-  // //           message: {
-  // //             type: "text",
-  // //             text:"You are a helpful assistant."
-  // //           }, 
-  // //       }],
-  // //     });
-
-  // //     console.log("Completion response:", completion); 
-  // //     setResponse(completion.choices[0]);
-   
-  // // }
-
-  // // fetchData();
-  // // const completion = await openai.chat.completions.create({
-  // //     model: "gpt-4-vision-preview",
-  // //     messages: [
-  // //       { 
-  // //         role: "user", 
-  // //         message: {
-  // //           type: "text",
-  // //           text:"describe this image"
-  // //         }, 
-  // //       },
-  // //       {
-  // //         type:"image_url",
-  // //         image_url:{
-  // //           url:"any image url",
-  // //           detail: "low" 
-  // //           //resize the image 
-  // //         }
-  // //       }
-  // //   ],
-  // //     max_tokens:1000,
-  // //     model: "gpt-4-vision-preview"
-  // //   });
-
-  // //   console.log("Completion response:", completion); 
-  // //   setResponse(completion.choices[0]);
-
-  // // }
-//   const completion = await openai.chat.completions.create({
-//     model: "gpt-4-vision-preview",
-//     messages: [
-//       { 
-//         role: "user", 
-//         message: {
-//           type: "text",
-//           text:"describe this image"
-//         }, 
-//       },
-//       {
-//         type:"image_url",
-//         image_url:{
-//           url:"any image url",
-//           detail: "low" 
-//           //resize the image 
-//         }
-//       }
-//   ],
-//     max_tokens:1000,
-//     model: "gpt-4-vision-preview"
-//   });
-
-//   console.log("Completion response:", completion); 
-//   setResponse(completion.choices[0]);
-
-// }
-// fetchData();
-//   }, []);
-
+  const main = async (imageSrc) => {
+    if (imageSrc) {
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: "Please analyze the following image of a pantry item, beverage, or food product. Extract and list the following details in a structured format and only return the format given and no other text: * Product Name (e.g., 'Corn Flakes', 'Orange Juice') * Expiration Date (e.g., 'MM/DD/YYYY') * Quantity (e.g., '500', '1') * Unit (e.g., 'g', 'oz', 'fl oz'). If any of this information cannot be found in the image, please return an empty string ('') for that field." },
+              {
+                type: "image_url",
+                image_url: {
+                  url: imageSrc, 
+                },
+              },
+            ],
+          },
+        ],
+        max_tokens: 500
+      });
+      const messageContent = response.choices[0].message.content.trim();
+      const parts = messageContent.split(/[\n*:]/).map(part =>part.trim())
+      console.log(parts)
+      const unitFromResponse = parts[11];
+      setNewItemName(parts[2])
+      setNewItemExpiration(parts[5])
+      setNewItemUnit(unitFromResponse)
+      setNewItemQuantity(parseFloat(parts[8])|| 1)
+      if (unitFromResponse && !units.includes(unitFromResponse)) {
+        setUnits([...units, unitFromResponse]);
+      }
+    } else {
+      console.log("No image provided for analysis.");
+    }
+  };
+  
   const readPantry = async () => {
     const q = query(collection(firestore, "Users", currentUser.currentUser.id, "Pantry"));
     const snapshot = await getDocs(q);
@@ -139,7 +99,7 @@ function ListPantryItems() {
         return;
       }
   
-      // Use a combination of item name and unit to create a unique ID
+      
       const docId = `${item.toLowerCase()}_${unit.toLowerCase()}_${expiration.toLowerCase()}`;
   
       
@@ -158,11 +118,11 @@ function ListPantryItems() {
         await setDoc(doc(pantryCollectionRef, docId), { name: item, count: quantityNumber, unit, expiration });
       }
   
-      // Reset state and close modal
+
       resetModalState()
       setShowModal(false);
   
-      // Refresh the pantry items
+  
       await readPantry();
     } catch (error) {
       console.error("Error adding item:", error);
@@ -292,6 +252,13 @@ function ListPantryItems() {
     setEditingItem(item); // Set the item being edited
     setShowModal(true);
   };
+
+  const handleCapture = (imageSrc) => {
+    setCapturedImage(imageSrc);
+    setShowCamera(false); // Close the camera after capture
+    main(imageSrc); // Process the captured image
+  };
+  
   // console.log(response)
   return (
     <div className="containerPantryList">
@@ -326,78 +293,88 @@ function ListPantryItems() {
               <div className="item-quantity">{item.count || 1} {item.unit || 'Unit'}</div>
               <div className="item-expiration">{item.expiration ? `Expires: ${formatDate(item.expiration)}` : 'No expiration date'}</div>
               <p className="edit-button" onClick={() => handleEditClick(item)}><i className="fas fa-pencil-alt"></i></p>
-              <button className="remove-button" onClick={() => removeItem(item.id)}>Remove</button>
+              <button className="remove-button" onClick={() => removeItem(item.id)}><i className="fas fa-trash"></i></button>
             </li>
           ))}
         </ul>
       </div>
 
       {showModal && (
-        <div className="modalpantry">
-            <div className="modal-content-pantry">
-            <h2 id="modalHeader">{editingItem ? "Edit Item" : "Add Item"}</h2>
+      <div className="modalpantry">
+        <div className="modal-content-pantry">
+          <h2 id="modalHeader">{editingItem ? "Edit Item" : "Add Item"}</h2>
+          <input
+            type="text"
+            value={newItemName}
+            onChange={(e) => setNewItemName(e.target.value)}
+            placeholder="Item name"
+            id="new-item-name-input"
+          />
+          <input
+            type="date"
+            value={newItemExpiration}
+            onChange={handleDateChange}
+            id="new-item-expiration-input"
+            min={todayDate}
+          />
+          <div id="unit-section">
             <input
-                type="text"
-                value={newItemName}
-                onChange={(e) => setNewItemName(e.target.value)}
-                placeholder="Item name"
-                id="new-item-name-input"
+              type="number"
+              value={newItemQuantity}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) { 
+                  setNewItemQuantity(value);
+                }
+              }}
+              placeholder="Quantity"
+              min="1"
+              id="new-item-quantity-input"
             />
-            <input
-                type="date"
-                value={newItemExpiration}
-                onChange={handleDateChange}
-                id="new-item-expiration-input"
-                min={todayDate}
-            />
-            <div id="unit-section">
-            <input
-                type="number"
-                value={newItemQuantity}
-                onChange={(e) => {
-                    const value = e.target.value;
-                    if (/^\d*$/.test(value)) { 
-                    setNewItemQuantity(value);
-                    }
-                }}
-                placeholder="Quantity"
-                min="1"
-                id="new-item-quantity-input"
-                />
-                <select
-                value={newItemUnit}
-                onChange={(e) => setNewItemUnit(e.target.value)}
-                id="new-item-unit-select"
-                >
-                {units.map((unit, index) => (
-                    <option key={index} value={unit}>{unit}</option>
-                ))}
-                </select>
-                <button onClick={handleAddUnit} id="addUnitButton">Add Unit</button>
+            <select
+              value={newItemUnit}
+              onChange={(e) => setNewItemUnit(e.target.value)}
+              id="new-item-unit-select"
+            >
+              {units.map((unit, index) => (
+                <option key={index} value={unit}>{unit}</option>
+              ))}
+            </select>
+            <button onClick={handleAddUnit} id="addUnitButton">Add Unit</button>
+          </div>
+          <button onClick={() => setShowCamera(true)} id="openCameraButton"><i className="fas fa-camera"></i></button>
+          <div id="buttonsForModal">
+            <button
+              onClick={() => {
+                if (editingItem) {
+                  editItem(editingItem, newItemName, newItemQuantity, newItemUnit, newItemExpiration);
+                } else {
+                  addItem(newItemName, newItemQuantity, newItemUnit, newItemExpiration);
+                }
+              }}
+              id="addItemButton"
+            >
+              {editingItem ? "Save Changes" : "Add"}
+            </button>
+            <button onClick={() => {
+              resetModalState();
+              setShowModal(false);
+            }} id="closeItemButton">
+              Close
+            </button>
+          </div>
+          {showCamera && (
+            <div className="camera-modal">
+              <CameraComponent
+                onCapture={handleCapture}
+                onClose={() => setShowCamera(false)}
+              />
             </div>
-            <div id="buttonsForModal">
-                <button
-                onClick={() => {
-                    if (editingItem) {
-                    editItem(editingItem,newItemName, newItemQuantity, newItemUnit, newItemExpiration);
-                    } else {
-                    addItem(newItemName, newItemQuantity, newItemUnit, newItemExpiration);
-                    }
-                }}
-                id="addItemButton"
-                >
-                {editingItem ? "Save Changes" : "Add"}
-                </button>
-                <button onClick={() =>  {
-                    resetModalState();
-                    setShowModal(false);
-                }} id="closeItemButton">
-                    Close
-                </button>
-            </div>
-            </div>
+          )}
         </div>
-        )}
+      </div>
+    )}
+
 
     </div>
   );
