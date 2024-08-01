@@ -51,19 +51,38 @@
     width: 100%;
     display: flex;
     justify-content: center;
-
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   .submit-button {
     background-color: #4caf50;
     color: white;
     width: 8rem;
-    margin: 1rem;
     padding: 0.8rem;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
+
+  .google-button {
+    background-color: #4285F4; 
+    width: 8rem;
+    color: white;
+    border: none;
+    padding: .3rem .6rem;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    margin: .5rem;
+    cursor: pointer;
+  }
+  
+ 
+.google-button:hover {
+  background-color: #357ae8; 
+}
   
   .submit-button:hover {
     background-color: #45a049;

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import "./SignUpPage.css"; 
 import {auth} from "../firebase/config"
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 
 
@@ -10,6 +10,23 @@ function SignUpPage({ onClose }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("")
+  const provider = new GoogleAuthProvider();
+
+  const handleGoogle = (e) => {
+    e.preventDefault();
+
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+      }).catch((error) => {
+        // Handle Errors here.
+        const errorMessage = error.message;
+        console.error("Google Sign-In Error:", errorMessage);
+        setError("Google Sign-In Error");
+      });
+  };
   
 
   const handleSubmit = (e) => {
@@ -60,6 +77,7 @@ function SignUpPage({ onClose }) {
         }
         <div id="submitButton">
         <button type="submit" className="submit-button">Submit</button>
+        <button onClick={handleGoogle} className="google-button"><i className="fab fa-google"></i> Sign up with Google</button>
         </div>
       </form>
     </div>

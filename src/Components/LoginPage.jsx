@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./LoginPage.css"; 
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider  } from "firebase/auth";
 import {auth} from "../firebase/config"
 
 
@@ -8,6 +8,7 @@ function LoginPage({ onClose }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error,setError] = useState("")
+  const provider = new GoogleAuthProvider();
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,6 +20,22 @@ function LoginPage({ onClose }) {
         setError("Invalid Email or Password")
         console.log(errorMessage)
     });
+  };
+
+  const handleGoogle = (e) => {
+    e.preventDefault();
+
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+      }).catch((error) => {
+        // Handle Errors here.
+        const errorMessage = error.message;
+        console.error("Google Sign-In Error:", errorMessage);
+        setError("Google Sign-In Error");
+      });
   };
 
   const handlePasswordReset = () => {
@@ -62,6 +79,7 @@ function LoginPage({ onClose }) {
         }
         <div id="submitButton">
         <button type="submit" className="submit-button">Submit</button>
+        <button onClick={handleGoogle} className="google-button"><i className="fab fa-google"></i> Sign in with Google</button>
         </div>
         <p id="resetButton" onClick={handlePasswordReset}>Forgot Password</p>
       </form>
