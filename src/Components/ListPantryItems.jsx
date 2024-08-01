@@ -25,7 +25,7 @@ function ListPantryItems() {
   const [editingItem, setEditingItem] = useState(null);
   const currentUser = useSelector(selectUser);
 
-  const [response, setResponse] = useState("");
+
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -296,7 +296,6 @@ function ListPantryItems() {
   return (
     <div className="containerPantryList">
       <h1 id="PantryHeader">{animateText("Pantry Items")}</h1>
-      <p>{response}</p>
       <div className="filter-buttons">
         <button onClick={() => setFilter("all")} className={`filter-button ${filter === "all" ? "active" : ""}`}>All</button>
         <button onClick={() => setFilter("expired")} className={`filter-button filter-button-expired-button ${filter === "expired" ? "active" : ""}`}  onMouseEnter={() => setShowIcon1(true)}

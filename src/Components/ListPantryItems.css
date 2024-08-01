@@ -116,6 +116,8 @@
   .button-icon {
     position: absolute;
     transition: opacity 0.3s ease, transform 0.3s ease;
+    justify-self: center;
+    align-self: center;
     text-align: center;
   }
   
