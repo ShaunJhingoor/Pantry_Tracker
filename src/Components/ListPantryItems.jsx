@@ -7,12 +7,6 @@ import { selectUser } from "../store/usersSlice";
 import OpenAI from "openai";
 import CameraComponent from "./CameraComponent";
 
-const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-if (!apiKey) {
-  console.error("Error: OPENAI_API_KEY environment variable is missing or empty.");
-}
-
-const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
 function ListPantryItems() {
   const [pantryItems, setPantryItems] = useState([]);
   const [newItemName, setNewItemName] = useState("");
@@ -28,7 +22,14 @@ function ListPantryItems() {
   const currentUser = useSelector(selectUser);
   const [showCamera, setShowCamera] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
-
+  
+  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+  if (!apiKey) {
+    console.error("Error: OPENAI_API_KEY environment variable is missing or empty.");
+  }
+  
+  const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
+  
   const main = async (imageSrc) => {
     if (imageSrc) {
       const response = await openai.chat.completions.create({
