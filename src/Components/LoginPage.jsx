@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./LoginPage.css"; 
 import { signInWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider  } from "firebase/auth";
 import {auth} from "../firebase/config"
+import { useEffect } from "react";
 
 
 function LoginPage({ onClose }) {
