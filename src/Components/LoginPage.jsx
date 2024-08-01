@@ -22,21 +22,31 @@ function LoginPage({ onClose }) {
     });
   };
 
-  const handleGoogle = (e) => {
-    e.preventDefault();
 
-    signInWithPopup(auth, provider)
-      .then((result) => {
+const handleGoogle = (e) => {
+  e.preventDefault();
+
+  signInWithRedirect(auth, provider);
+};
+
+// In your component or app initialization, handle the result after redirect
+useEffect(() => {
+  getRedirectResult(auth)
+    .then((result) => {
+      if (result) {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         const user = result.user;
-      }).catch((error) => {
-        // Handle Errors here.
-        const errorMessage = error.message;
-        console.error("Google Sign-In Error:", errorMessage);
-        setError("Google Sign-In Error");
-      });
-  };
+        // Handle user and token
+      }
+    }).catch((error) => {
+      // Handle Errors here.
+      const errorMessage = error.message;
+      console.error("Google Sign-In Error:", errorMessage);
+      setError("Google Sign-In Error");
+    });
+}, []);
+
 
   const handlePasswordReset = () => {
     const email = prompt('Please Enter Email')
