@@ -116,6 +116,7 @@
   .button-icon {
     position: absolute;
     transition: opacity 0.3s ease, transform 0.3s ease;
+    text-align: center;
   }
   
   /* Initial State */

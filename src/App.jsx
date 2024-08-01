@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/config";
 import { setUser } from "./store/usersSlice";
+import "./App.css"
 
 function App() {
   const user = useSelector(selectUser);
@@ -29,7 +30,11 @@ function App() {
   }, [dispatch]);
 
   if (loading) {
-    return <div>Loading...</div>; // Or any other loading component
+    return(
+    <div id='loaderconter'>
+      <div className='loader'></div>
+    </div>
+    )
   }
 
   return (

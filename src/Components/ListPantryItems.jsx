@@ -4,7 +4,13 @@ import { firestore } from "../firebase/config";
 import './ListPantryItems.css'; 
 import { useSelector } from 'react-redux';
 import { selectUser } from "../store/usersSlice"; 
+// import OpenAI from "openai";
+// const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+// if (!apiKey) {
+//   console.error("Error: OPENAI_API_KEY environment variable is missing or empty.");
+// }
 
+// const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
 function ListPantryItems() {
   const [pantryItems, setPantryItems] = useState([]);
   const [newItemName, setNewItemName] = useState("");
@@ -18,6 +24,86 @@ function ListPantryItems() {
   const [filter, setFilter] = useState("all");
   const [editingItem, setEditingItem] = useState(null);
   const currentUser = useSelector(selectUser);
+
+  const [response, setResponse] = useState("");
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  // //   
+  // //     const completion = await openai.chat.completions.create({
+  // //       model: "gpt-3.5-turbo",
+  // //       messages: [
+  // //         { 
+  // //           role: "user", 
+  // //           message: {
+  // //             type: "text",
+  // //             text:"You are a helpful assistant."
+  // //           }, 
+  // //       }],
+  // //     });
+
+  // //     console.log("Completion response:", completion); 
+  // //     setResponse(completion.choices[0]);
+   
+  // // }
+
+  // // fetchData();
+  // // const completion = await openai.chat.completions.create({
+  // //     model: "gpt-4-vision-preview",
+  // //     messages: [
+  // //       { 
+  // //         role: "user", 
+  // //         message: {
+  // //           type: "text",
+  // //           text:"describe this image"
+  // //         }, 
+  // //       },
+  // //       {
+  // //         type:"image_url",
+  // //         image_url:{
+  // //           url:"any image url",
+  // //           detail: "low" 
+  // //           //resize the image 
+  // //         }
+  // //       }
+  // //   ],
+  // //     max_tokens:1000,
+  // //     model: "gpt-4-vision-preview"
+  // //   });
+
+  // //   console.log("Completion response:", completion); 
+  // //   setResponse(completion.choices[0]);
+
+  // // }
+//   const completion = await openai.chat.completions.create({
+//     model: "gpt-4-vision-preview",
+//     messages: [
+//       { 
+//         role: "user", 
+//         message: {
+//           type: "text",
+//           text:"describe this image"
+//         }, 
+//       },
+//       {
+//         type:"image_url",
+//         image_url:{
+//           url:"any image url",
+//           detail: "low" 
+//           //resize the image 
+//         }
+//       }
+//   ],
+//     max_tokens:1000,
+//     model: "gpt-4-vision-preview"
+//   });
+
+//   console.log("Completion response:", completion); 
+//   setResponse(completion.choices[0]);
+
+// }
+// fetchData();
+//   }, []);
 
   const readPantry = async () => {
     const q = query(collection(firestore, "Users", currentUser.currentUser.id, "Pantry"));
@@ -33,7 +119,6 @@ function ListPantryItems() {
 
   useEffect(() => {
     readPantry();
-    console.log(currentUser.currentUser)
   }, [currentUser]);
 
   const resetModalState = () => {
@@ -103,11 +188,10 @@ function ListPantryItems() {
      
         const docRef = docSnap.ref;
         const data = docSnap.data();
-        console.log(data)
         const originalDocId = data.originalDocId; 
         
         const newDocId = `${newName.toLowerCase()}_${newUnit.toLowerCase()}_${newExpiration.toLowerCase()}`;
-        console.log(newName)
+  
         
         await setDoc(docRef, { 
             count: quantityNumber, 
@@ -208,10 +292,11 @@ function ListPantryItems() {
     setEditingItem(item); // Set the item being edited
     setShowModal(true);
   };
-  
+  // console.log(response)
   return (
     <div className="containerPantryList">
       <h1 id="PantryHeader">{animateText("Pantry Items")}</h1>
+      <p>{response}</p>
       <div className="filter-buttons">
         <button onClick={() => setFilter("all")} className={`filter-button ${filter === "all" ? "active" : ""}`}>All</button>
         <button onClick={() => setFilter("expired")} className={`filter-button filter-button-expired-button ${filter === "expired" ? "active" : ""}`}  onMouseEnter={() => setShowIcon1(true)}
