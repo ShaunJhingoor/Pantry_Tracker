@@ -408,9 +408,6 @@
 
     .add-item-button .button-text,
     .add-item-button .button-icon {
-        position: absolute; 
-        left: 50%; 
-        transform: translateX(-50%); 
         text-align: center;
     }
 }
