@@ -17,7 +17,7 @@ function Header(){
     }
     return(
         <div id="headerContainer">
-            <h1 id="pantrytrackerheader">Pantry Tracker <i class="fas fa-clipboard-list"></i></h1>
+            <span id="pantrytrackerheader">Pantry Tracker <i class="fas fa-clipboard-list"></i></span>
             <button onClick={handleSignOut} id="logoutButton"><p id="logoutButtonText">Logout  <i class="fa-solid fa-power-off"></i></p> </button>
         </div>
     )

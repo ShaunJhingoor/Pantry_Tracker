@@ -260,7 +260,7 @@ function ListPantryItems() {
     main(imageSrc); // Process the captured image
   };
   
-  // console.log(response)
+ 
   return (
     <div className="containerPantryList">
       <h1 id="PantryHeader">{animateText("Pantry Items")}</h1>

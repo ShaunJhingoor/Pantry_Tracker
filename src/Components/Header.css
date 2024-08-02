@@ -80,3 +80,8 @@
         text-shadow: 0 0 20px rgba(255, 255, 255, 1);
     }
 } */
+@media (max-width: 600px) {
+    #pantrytrackerheader{
+        font-size: 1.5rem;
+    }
+}
