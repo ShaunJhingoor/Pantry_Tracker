@@ -107,6 +107,7 @@
     position: relative;
     overflow: hidden;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -115,6 +116,7 @@
     z-index: 0;
     /* Set a max-width to ensure responsiveness */
     max-width: 300px; /* Adjust this value as needed */
+    line-height: 1.5rem
 }
   
   /* Text and Icon Styles */
