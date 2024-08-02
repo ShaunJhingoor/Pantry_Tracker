@@ -115,6 +115,7 @@
     margin: 0 auto; /* Center the button horizontally */
     max-width: 300px;
     text-align: center; /* Center text inside the button */
+    z-index: 0; 
 }
   
   /* Text and Icon Styles */
@@ -125,12 +126,13 @@
     justify-self: center;
     align-self: center;
     text-align: center;
+    z-index: 0; 
   }
   
   /* Initial State */
   .button-text {
     opacity: 1;
-    z-index: 1; /* Ensure text is above the icon */
+    z-index: 0; /* Ensure text is above the icon */
   }
   
   .button-icon {
