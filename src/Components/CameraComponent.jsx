@@ -4,22 +4,20 @@ import "./CameraComponent.css";
 
 const CameraComponent = ({ onCapture, onClose }) => {
   const cameraRef = useRef(null);
-  const [facingMode, setFacingMode] = useState("user"); // Default to user mode
+  const [isUserMode, setIsUserMode] = useState(true); // Default to user mode
 
   const handleCapture = () => {
-    if (cameraRef.current) {
-      const image = cameraRef.current.takePhoto();
-      if (typeof image === 'string') {
-        onCapture(image);
-      } else if (image instanceof Blob) {
-        const imageUrl = URL.createObjectURL(image);
-        onCapture(imageUrl);
-      }
+    const image = cameraRef.current.takePhoto();
+    if (typeof image === 'string') {
+      onCapture(image);
+    } else if (image instanceof Blob) {
+      const imageUrl = URL.createObjectURL(image);
+      onCapture(imageUrl);
     }
   };
 
   const toggleFacingMode = () => {
-    setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
+    setIsUserMode(prevMode => !prevMode);
   };
 
   return (
@@ -29,8 +27,7 @@ const CameraComponent = ({ onCapture, onClose }) => {
           ref={cameraRef}
           width={300}
           height={300}
-          facingMode={facingMode}
-          onCameraReady={() => console.log("Camera ready")}
+          facingMode={isUserMode ? "user" : "environment"}
         />
         <button className="close-button" onClick={onClose}>X</button>
         <button className="toggle-button" onClick={toggleFacingMode}>
