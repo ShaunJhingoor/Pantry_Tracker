@@ -96,7 +96,11 @@
 }
 
 /* Add Item Button */
-
+#add-item-button-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .add-item-button {
     background-color: #2C3E50;
     color: white;
@@ -105,14 +109,13 @@
     border-radius: 10px;
     cursor: pointer;
     position: relative;
+    font-weight: bold;
+    font-size: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    font-size: 1rem;
-    line-height: 1.5rem;
     margin: 0 auto; 
-    max-width: 300px;
+
     text-align: center; 
     z-index: 0; 
 }
