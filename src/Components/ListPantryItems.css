@@ -113,12 +113,11 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    text-align: center;
     font-weight: bold;
     font-size: 1rem;
     z-index: 0;
-    /* Set a max-width to ensure responsiveness */
-    max-width: 300px; /* Adjust this value as needed */
+ 
+    max-width: 300px;
     line-height: 1.5rem
 }
   
@@ -406,5 +405,12 @@
     .header-item, .header-quantity{
         width: 12vw;
         font-size: .9rem;
+    }
+    .add-item-button .button-icon {
+        text-align: center;
+    }
+
+    .add-item-button .button-text{
+        text-align: center;
     }
 }
