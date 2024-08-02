@@ -120,7 +120,7 @@
   /* Text and Icon Styles */
   .button-text,
   .button-icon {
-    position: absolute;
+    position: relative;
     transition: opacity 0.3s ease, transform 0.3s ease;
     justify-self: center;
     align-self: center;
