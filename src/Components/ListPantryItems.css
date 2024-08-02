@@ -406,8 +406,11 @@
         align-self: center;
     }
 
-    .add-item-button .button-text{
+    .add-item-button .button-text,
+    .add-item-button .button-icon {
+        position: relative; /* Change to relative for proper centering */
+        left: 50%; /* Center horizontally */
+        transform: translateX(-50%); /* Adjust horizontal position */
         text-align: center;
-        align-self: center;
     }
 }
