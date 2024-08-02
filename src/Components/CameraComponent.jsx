@@ -18,6 +18,9 @@ const CameraComponent = ({ onCapture, onClose }) => {
           }
       
     };
+    const toggleFacingMode = () => {
+      setFacingMode((prevMode) => (prevMode === "environment" ? "user" : "environment"));
+    };
 
   return (
     <div className="camera-modal">
@@ -29,6 +32,9 @@ const CameraComponent = ({ onCapture, onClose }) => {
           onCameraReady={() => setCameraReady(true)}
         />
         <button className="close-button" onClick={onClose}>X</button>
+        <button className="toggle-button" onClick={toggleFacingMode}>
+          <i className="fas fa-sync-alt"></i>
+        </button>
         <div className="camera-buttons">
           <button className="capture-button" onClick={handleCapture}>Take Picture</button>
         </div>
