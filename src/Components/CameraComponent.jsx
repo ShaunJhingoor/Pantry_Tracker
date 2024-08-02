@@ -23,7 +23,9 @@ const CameraComponent = ({ onCapture, onClose }) => {
   return (
     <div className="camera-modal">
       <div className="camera-container">
+        {/* Adding a key to force re-render */}
         <Camera
+          key={isUserMode ? 'user' : 'environment'} // Force re-render by changing the key
           ref={cameraRef}
           width={300}
           height={300}
