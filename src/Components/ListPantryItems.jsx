@@ -7,6 +7,8 @@ import { selectUser } from "../store/usersSlice";
 import OpenAI from "openai";
 import CameraComponent from "./CameraComponent";
 
+
+
 function ListPantryItems() {
   const [pantryItems, setPantryItems] = useState([]);
   const [newItemName, setNewItemName] = useState("");
@@ -22,7 +24,8 @@ function ListPantryItems() {
   const currentUser = useSelector(selectUser);
   const [showCamera, setShowCamera] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
-  
+  const [lastApiCall, setLastApiCall] = useState(0);
+  const RATE_LIMIT_INTERVAL = 10000
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
   if (!apiKey) {
     console.error("Error: OPENAI_API_KEY environment variable is missing or empty.");
@@ -54,11 +57,12 @@ function ListPantryItems() {
       const parts = messageContent.split(/[\n*:]/).map(part =>part.trim())
       console.log(parts)
       const unitFromResponse = parts[11];
+      console.log(unitFromResponse)
       setNewItemName(parts[2])
       setNewItemExpiration(parts[5])
       setNewItemUnit(unitFromResponse)
       setNewItemQuantity(parseFloat(parts[8])|| 1)
-      if (unitFromResponse && !units.includes(unitFromResponse)) {
+      if (unitFromResponse !==  '' && !units.includes(unitFromResponse)) {
         setUnits([...units, unitFromResponse]);
       }
     } else {
@@ -76,6 +80,16 @@ function ListPantryItems() {
     });
 
     setPantryItems(items);
+  };
+
+  const rateLimitedMain = async (imageSrc) => {
+    const now = Date.now();
+    if (now - lastApiCall < RATE_LIMIT_INTERVAL) {
+      alert("Must wait 10 seconds before submitting another request");
+      return;
+    }
+    setLastApiCall(now);
+    await main(imageSrc);
   };
 
   useEffect(() => {
@@ -257,7 +271,7 @@ function ListPantryItems() {
   const handleCapture = (imageSrc) => {
     setCapturedImage(imageSrc);
     setShowCamera(false); // Close the camera after capture
-    main(imageSrc); // Process the captured image
+    rateLimitedMain(imageSrc)
   };
   
  
