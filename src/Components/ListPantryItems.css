@@ -111,9 +111,9 @@
     font-weight: bold;
     font-size: 1rem;
     line-height: 1.5rem;
-    margin: 0 auto; /* Center the button horizontally */
+    margin: 0 auto; 
     max-width: 300px;
-    text-align: center; /* Center text inside the button */
+    text-align: center; 
     z-index: 0; 
 }
   
@@ -405,9 +405,11 @@
     }
     .add-item-button .button-icon {
         text-align: center;
+        align-self: center;
     }
 
     .add-item-button .button-text{
         text-align: center;
+        align-self: center;
     }
 }
