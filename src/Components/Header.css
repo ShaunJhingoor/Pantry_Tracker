@@ -34,7 +34,7 @@
     background-color: #7abdff;
     border: 1px solid black;
     color: white;
-    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.5s ease, border-color 0.5s ease, transform 0.5s ease;
 }
 
 

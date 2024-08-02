@@ -210,7 +210,7 @@ function ListPantryItems() {
     return words.map((word, wordIndex) => (
       <span key={wordIndex} className="word" style={{ animationDelay: `${wordIndex * 0.5}s` }}>
         {word.split('').map((char, index) => (
-          <span key={index} style={{ animationDelay: `${(wordIndex * word.length + index) * 0.05}s` }}>
+          <span key={index} style={{ animationDelay: `${(wordIndex * word.length + index) * 0.1}s` }}>
             {char}
           </span>
         ))}
