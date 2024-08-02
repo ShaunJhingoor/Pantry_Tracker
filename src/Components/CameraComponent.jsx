@@ -17,7 +17,7 @@ const CameraComponent = ({ onCapture, onClose }) => {
   };
 
   const toggleFacingMode = () => {
-    setIsUserMode(prevMode => !prevMode);
+    setIsUserMode(!isUserMode);
   };
 
   return (
