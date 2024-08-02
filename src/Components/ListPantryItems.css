@@ -113,8 +113,9 @@
     font-weight: bold;
     font-size: 1rem;
     z-index: 0;
-    width: fit-content;
-  }
+    /* Set a max-width to ensure responsiveness */
+    max-width: 300px; /* Adjust this value as needed */
+}
   
   /* Text and Icon Styles */
   .button-text,
