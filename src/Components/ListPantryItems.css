@@ -285,7 +285,7 @@
     text-align: center;
 }
 #new-item-expiration-input{
-    width: 100%;
+    width: 25rem;
 }
 /* Filter Button Styles */
 .filter-buttons {
