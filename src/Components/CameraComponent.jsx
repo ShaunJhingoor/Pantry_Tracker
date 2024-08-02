@@ -1,15 +1,20 @@
 import React, { useState, useRef } from "react";
-import Webcam from "react-webcam";
+import { Camera } from "react-camera-pro";
 import "./CameraComponent.css";
 
 const CameraComponent = ({ onCapture, onClose }) => {
-  const webcamRef = useRef(null);
+  const cameraRef = useRef(null);
   const [facingMode, setFacingMode] = useState("user"); // Default to user mode
 
   const handleCapture = () => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    if (imageSrc) {
-      onCapture(imageSrc);
+    if (cameraRef.current) {
+      const image = cameraRef.current.takePhoto();
+      if (typeof image === 'string') {
+        onCapture(image);
+      } else if (image instanceof Blob) {
+        const imageUrl = URL.createObjectURL(image);
+        onCapture(imageUrl);
+      }
     }
   };
 
@@ -20,13 +25,12 @@ const CameraComponent = ({ onCapture, onClose }) => {
   return (
     <div className="camera-modal">
       <div className="camera-container">
-        <Webcam
-          audio={false}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
+        <Camera
+          ref={cameraRef}
           width={300}
           height={300}
-          videoConstraints={{ facingMode }}
+          facingMode={facingMode}
+          onCameraReady={() => console.log("Camera ready")}
         />
         <button className="close-button" onClick={onClose}>X</button>
         <button className="toggle-button" onClick={toggleFacingMode}>
