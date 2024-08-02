@@ -55,9 +55,7 @@ function ListPantryItems() {
       });
       const messageContent = response.choices[0].message.content.trim();
       const parts = messageContent.split(/[\n*:]/).map(part =>part.trim())
-      console.log(parts)
       const unitFromResponse = parts[11];
-      console.log(unitFromResponse)
       setNewItemName(parts[2])
       setNewItemExpiration(parts[5])
       setNewItemUnit(unitFromResponse)
@@ -66,7 +64,7 @@ function ListPantryItems() {
         setUnits([...units, unitFromResponse]);
       }
     } else {
-      console.log("No image provided for analysis.");
+      alert("No image provided for analysis.");
     }
   };
   
