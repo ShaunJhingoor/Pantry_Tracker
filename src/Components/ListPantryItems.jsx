@@ -273,7 +273,6 @@ function ListPantryItems() {
         </button>
         <button onClick={() => setFilter("expiring")} className={`filter-button ${filter === "expiring" ? "active" : ""}`}>Expiring 30 Days</button>
     </div>
-    <div id="add-item-button-container">
       <button 
         onClick={() => setShowModal(true)} 
         className="add-item-button"
@@ -283,7 +282,6 @@ function ListPantryItems() {
         <span className="button-text">Add Item</span>
         <i className="fas fa-shopping-cart button-icon"></i>
       </button>
-      </div>
       <div className="pantry-list-container">
         <div className="list-header">
           <div className="header-item">Item</div>

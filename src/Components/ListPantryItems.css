@@ -96,11 +96,7 @@
 }
 
 /* Add Item Button */
-#add-item-button-container{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+
 .add-item-button {
     background-color: #2C3E50;
     color: white;
@@ -108,16 +104,14 @@
     padding: 1.5rem 3rem;
     border-radius: 10px;
     cursor: pointer;
-    position: relative;
-    font-weight: bold;
-    font-size: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto; 
-
-    text-align: center; 
-    z-index: 0; 
+    font-weight: bold;
+    font-size: 1rem;
+    margin: 0 auto;
+    position: relative; 
+    overflow: hidden;
 }
   
   /* Text and Icon Styles */
