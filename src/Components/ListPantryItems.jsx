@@ -323,6 +323,7 @@ function ListPantryItems() {
             placeholder="Item name"
             id="new-item-name-input"
           />
+          <label>Expiration Date</label>
           <input
             type="date"
             value={newItemExpiration}
@@ -330,6 +331,7 @@ function ListPantryItems() {
             id="new-item-expiration-input"
             min={todayDate}
           />
+          {/* <label>Units</label> */}
           <div id="unit-section">
             <input
               type="number"
