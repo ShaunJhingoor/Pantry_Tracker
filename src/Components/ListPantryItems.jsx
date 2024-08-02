@@ -254,6 +254,13 @@ function ListPantryItems() {
       const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
       return daysDiff <= 30 && daysDiff > 0;
     }
+    if(filter === "expiringweek"){
+      const today = new Date();
+      const expiryDate = new Date(item.expiration);
+      const timeDiff = expiryDate - today;
+      const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+      return daysDiff <= 7 && daysDiff > 0;
+    }
     return true; // Default to showing all items
   });
 
@@ -283,6 +290,7 @@ function ListPantryItems() {
         <span className="button-text">Expired</span>
          <i className="fas fa-trash-alt button-icon"></i>
         </button>
+        <button onClick={() => setFilter("expiringweek")} className={`filter-button ${filter === "expiringweek" ? "active" : ""}`}>Expiring 1 Week</button>
         <button onClick={() => setFilter("expiring")} className={`filter-button ${filter === "expiring" ? "active" : ""}`}>Expiring 30 Days</button>
     </div>
       <button 
