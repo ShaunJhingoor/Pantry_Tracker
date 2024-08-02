@@ -99,17 +99,17 @@
     background-color: #2C3E50;
     color: white;
     border: none;
-    padding: 1.2rem 3rem;
-    border-radius: 8px;
+    padding: 1.5rem 3rem;
+    border-radius: 10px;
     cursor: pointer;
     position: relative;
     overflow: hidden;
     display: flex;
-    /* align-items: center; */
+    align-items: center;
     justify-content: center;
     font-weight: bold;
     font-size: 1rem;
-    margin: 1rem auto;
+    margin-bottom: 1rem;
     z-index: 0;
     width: fit-content;
   }
