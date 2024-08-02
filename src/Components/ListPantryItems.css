@@ -99,24 +99,25 @@
     background-color: #2C3E50;
     color: white;
     border: none;
-    padding: 1rem 3rem;
+    padding: 1.2rem 3rem;
     border-radius: 8px;
     cursor: pointer;
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
-    font-weight: bold;
     justify-content: center;
+    font-weight: bold;
     font-size: 1rem;
     margin-bottom: 1rem;
     z-index: 0;
+    width: fit-content;
   }
   
   /* Text and Icon Styles */
   .button-text,
   .button-icon {
-    position: absolute;
+    position: relative;
     transition: opacity 0.3s ease, transform 0.3s ease;
     justify-self: center;
     align-self: center;
