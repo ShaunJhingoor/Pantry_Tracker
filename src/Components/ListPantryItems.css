@@ -292,7 +292,8 @@
     align-items: center; /* Center buttons vertically */
     gap: 1rem; /* Reduced gap for better spacing */
     margin-bottom: 2rem;
-    flex-wrap: nowrap
+    max-width: 100vw;
+    flex-wrap: wrap;
 }
 
 /* General Filter Button Styling */
@@ -308,6 +309,8 @@
     transition: background-color 0.3s ease, transform 0.3s ease;
     font-size: 1rem; /* Adjusted font size for better readability */
     font-weight: bold; /* Bold text for better emphasis */
+    white-space: nowrap; /* Prevent text from wrapping */
+ 
 }
 
 

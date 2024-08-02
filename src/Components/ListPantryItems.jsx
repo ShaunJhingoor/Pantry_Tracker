@@ -290,8 +290,8 @@ function ListPantryItems() {
         <span className="button-text">Expired</span>
          <i className="fas fa-trash-alt button-icon"></i>
         </button>
-        <button onClick={() => setFilter("expiringweek")} className={`filter-button ${filter === "expiringweek" ? "active" : ""}`}>Expiring 1 Week</button>
-        <button onClick={() => setFilter("expiring")} className={`filter-button ${filter === "expiring" ? "active" : ""}`}>Expiring 30 Days</button>
+        <button onClick={() => setFilter("expiringweek")} className={`filter-button ${filter === "expiringweek" ? "active" : ""}`}>Expiring in 1 Week</button>
+        <button onClick={() => setFilter("expiring")} className={`filter-button ${filter === "expiring" ? "active" : ""}`}>Expiring in 30 Days</button>
     </div>
       <button 
         onClick={() => setShowModal(true)} 
