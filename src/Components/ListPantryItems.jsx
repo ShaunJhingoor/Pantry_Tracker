@@ -327,7 +327,7 @@ function ListPantryItems() {
             type="date"
             value={newItemExpiration}
             onChange={handleDateChange}
-            id="new-item-expiration-input"
+            id="new-item-name-input"
             min={todayDate}
           />
           <div id="unit-section">
