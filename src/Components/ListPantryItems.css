@@ -408,9 +408,9 @@
 
     .add-item-button .button-text,
     .add-item-button .button-icon {
-        position: relative; /* Change to relative for proper centering */
-        left: 50%; /* Center horizontally */
-        transform: translateX(-50%); /* Adjust horizontal position */
+        position: absolute; 
+        left: 50%; 
+        transform: translateX(-50%); 
         text-align: center;
     }
 }
