@@ -406,8 +406,10 @@
         align-self: center;
     }
 
-    .add-item-button .button-text,
-    .add-item-button .button-icon {
+    .add-item-button .button-text{
+        position: absolute; 
+        left: 50%; 
+        transform: translateX(-50%); 
         text-align: center;
     }
 }
