@@ -395,6 +395,12 @@
 /* #item-expiration{
     font-size: 20rem;
 } */
+.add-item-button .button-text{
+    position: absolute; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    text-align: center;
+}
 
 @media (max-width: 600px) {
     .header-item, .header-quantity{
