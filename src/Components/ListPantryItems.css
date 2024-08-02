@@ -117,18 +117,19 @@
   /* Text and Icon Styles */
   .button-text,
   .button-icon {
-    position: relative;
+    position: absolute;
     transition: opacity 0.3s ease, transform 0.3s ease;
     justify-self: center;
     align-self: center;
     text-align: center;
-    z-index: 0; 
+ 
   }
   
   /* Initial State */
   .button-text {
     opacity: 1;
-    z-index: 0; /* Ensure text is above the icon */
+    z-index: 1;
+    /* Ensure text is above the icon */
   }
   
   .button-icon {
@@ -347,7 +348,7 @@
 /* Initial State */
 .button-text {
     opacity: 1;
-    z-index: 1; /* Ensure text is above the icon */
+    z-index: 0;
 }
 
 /* Hover State */
@@ -372,7 +373,7 @@
 /* Button Icon Styling */
 .button-icon {
     opacity: 0;
-    font-size: 1.5rem; /* Larger icon for better visibility */
+    font-size: 1.5rem; 
     transform: scale(1.2);
 }
 
