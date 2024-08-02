@@ -284,7 +284,9 @@
 #new-item-unit-select{
     text-align: center;
 }
-
+#new-item-expiration-input{
+    width: 100%;
+}
 /* Filter Button Styles */
 .filter-buttons {
     display: flex;
