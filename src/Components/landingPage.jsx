@@ -25,7 +25,7 @@ function LandingPage() {
           <h1 id="title">Welcome to Pantry Track</h1>
           <p id="description">
             Have you ever been to the grocery store and forgot your list or what
-            you are picking up? Then this app is for you!
+            you are picking up? Then this website is for you!
           </p>
           <div className="button-container">
             <button id="sign-up-button" onClick={() => openModal("signup")}>Sign Up</button>
