@@ -45,7 +45,7 @@ function ListPantryItems() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imageUrl: imageSrc }),
       });
-      console.log(res);
+
       if (!res.ok) {
         console.error("Analyze failed");
         alert("Failed to analyze image.");
