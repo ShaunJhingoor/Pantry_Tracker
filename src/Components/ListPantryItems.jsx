@@ -42,6 +42,204 @@ function ListPantryItems() {
 
   const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
 
+  const main = async (imageSrc) => {
+    if (imageSrc) {
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: "Please analyze the following image of a pantry item, beverage, or food product. Extract and list the following details in a structured format and only return the format given and no other text: * Product Name (e.g., 'Corn Flakes', 'Orange Juice') * Expiration Date (e.g., 'MM/DD/YYYY') * Quantity (e.g., '500', '1') * Unit (e.g., 'g', 'oz', 'fl oz'). If any of this information cannot be found in the image, please return an empty string ('') for that field.",
+              },
+              {
+                type: "image_url",
+                image_url: {
+                  url: imageSrc,
+                },
+              },
+            ],
+          },
+        ],
+        max_tokens: 500,
+      });
+      const messageContent = response.choices[0].message.content.trim();
+      const parts = messageContent.split(/[\n*:]/).map((part) => part.trim());
+      const unitFromResponse = parts[11];
+      setNewItemName(parts[2]);
+      setNewItemExpiration(parts[5]);
+      setNewItemUnit(unitFromResponse);
+      setNewItemQuantity(parseFloat(parts[8]) || 1);
+      if (unitFromResponse !== "" && !units.includes(unitFromResponse)) {
+        setUnits([...units, unitFromResponse]);
+      }
+    } else {
+      alert("No image provided for analysis.");
+    }
+  };
+
+  const readPantry = async () => {
+    const q = query(
+      collection(firestore, "Users", currentUser.currentUser.id, "Pantry")
+    );
+    const snapshot = await getDocs(q);
+    const items = [];
+
+    snapshot.forEach((doc) => {
+      items.push({ id: doc.id, ...doc.data() });
+    });
+
+    setPantryItems(items);
+  };
+
+  const rateLimitedMain = async (imageSrc) => {
+    const now = Date.now();
+    if (now - lastApiCall < RATE_LIMIT_INTERVAL) {
+      alert("Must wait 10 seconds before submitting another request");
+      return;
+    }
+    setLastApiCall(now);
+    await main(imageSrc);
+  };
+
+  useEffect(() => {
+    readPantry();
+  }, [currentUser]);
+
+  const resetModalState = () => {
+    setNewItemName("");
+    setNewItemQuantity(1);
+    setNewItemUnit("Unit");
+    setNewItemExpiration("");
+    setEditingItem(null);
+  };
+  const addItem = async (item, quantity, unit, expiration) => {
+    try {
+      const pantryCollectionRef = collection(
+        firestore,
+        "Users",
+        currentUser.currentUser.id,
+        "Pantry"
+      );
+
+      const quantityNumber = Number(quantity);
+      if (isNaN(quantityNumber)) {
+        console.error("Invalid quantity value:", quantity);
+        return;
+      }
+
+      const docId = `${item.toLowerCase()}_${unit.toLowerCase()}_${expiration.toLowerCase()}`;
+
+      const q = query(pantryCollectionRef, where("__name__", "==", docId));
+      const snapshot = await getDocs(q);
+
+      if (!snapshot.empty) {
+        const docSnap = snapshot.docs[0];
+        const docRef = docSnap.ref;
+        const data = docSnap.data();
+        const currentCount = Number(data.count) || 0;
+        const newCount = currentCount + quantityNumber;
+
+        await setDoc(docRef, { count: newCount, expiration }, { merge: true });
+      } else {
+        await setDoc(doc(pantryCollectionRef, docId), {
+          name: item,
+          count: quantityNumber,
+          unit,
+          expiration,
+        });
+      }
+
+      resetModalState();
+      setShowModal(false);
+
+      await readPantry();
+    } catch (error) {
+      console.error("Error adding item:", error);
+    }
+  };
+
+  const editItem = async (
+    itemId,
+    newName,
+    newQuantity,
+    newUnit,
+    newExpiration
+  ) => {
+    try {
+      const pantryCollectionRef = collection(
+        firestore,
+        "Users",
+        currentUser.currentUser.id,
+        "Pantry"
+      );
+      const quantityNumber = Number(newQuantity);
+
+      if (isNaN(quantityNumber) || quantityNumber <= 0) {
+        console.error("Invalid quantity value:", newQuantity);
+        return;
+      }
+
+      const q = query(pantryCollectionRef, where("__name__", "==", itemId.id));
+
+      const snapshot = await getDocs(q);
+
+      const docSnap = snapshot.docs[0];
+
+      const docRef = docSnap.ref;
+      const data = docSnap.data();
+      const originalDocId = data.originalDocId;
+
+      const newDocId = `${newName.toLowerCase()}_${newUnit.toLowerCase()}_${newExpiration.toLowerCase()}`;
+
+      await setDoc(
+        docRef,
+        {
+          count: quantityNumber,
+          unit: newUnit,
+          expiration: newExpiration,
+          name: newName,
+          originalDocId: newDocId,
+        },
+        { merge: true }
+      );
+
+      // Reset state and close modal
+      resetModalState();
+      setShowModal(false);
+      // Refresh the pantry items
+      await readPantry();
+    } catch (error) {
+      console.error("Error editing item:", error);
+    } finally {
+      // Ensure editingItem is cleared regardless of success or failure
+      resetModalState();
+      setShowModal(false);
+    }
+  };
+
+  const removeItem = async (item) => {
+    try {
+      const docRef = doc(
+        collection(firestore, "Users", currentUser.currentUser.id, "Pantry"),
+        item
+      );
+
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        await deleteDoc(docRef);
+        await readPantry();
+      } else {
+        console.log("Document does not exist.");
+      }
+    } catch (error) {
+      console.error("Error removing item:", error);
+    }
+  };
+
   const handleAddUnit = () => {
     const newUnit = prompt("Enter the new unit:");
     if (newUnit && !units.includes(newUnit)) {
