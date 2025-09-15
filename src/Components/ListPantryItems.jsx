@@ -13,7 +13,6 @@ import { firestore } from "../firebase/config";
 import "./ListPantryItems.css";
 import { useSelector } from "react-redux";
 import { selectUser } from "../store/usersSlice";
-import OpenAI from "openai";
 import CameraComponent from "./CameraComponent";
 
 function ListPantryItems() {
@@ -33,50 +32,39 @@ function ListPantryItems() {
   const [capturedImage, setCapturedImage] = useState(null);
   const [lastApiCall, setLastApiCall] = useState(0);
   const RATE_LIMIT_INTERVAL = 10000;
-  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-  if (!apiKey) {
-    console.error(
-      "Error: OPENAI_API_KEY environment variable is missing or empty."
-    );
-  }
-
-  const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
 
   const main = async (imageSrc) => {
-    if (imageSrc) {
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: "Please analyze the following image of a pantry item, beverage, or food product. Extract and list the following details in a structured format and only return the format given and no other text: * Product Name (e.g., 'Corn Flakes', 'Orange Juice') * Expiration Date (e.g., 'MM/DD/YYYY') * Quantity (e.g., '500', '1') * Unit (e.g., 'g', 'oz', 'fl oz'). If any of this information cannot be found in the image, please return an empty string ('') for that field.",
-              },
-              {
-                type: "image_url",
-                image_url: {
-                  url: imageSrc,
-                },
-              },
-            ],
-          },
-        ],
-        max_tokens: 500,
-      });
-      const messageContent = response.choices[0].message.content.trim();
-      const parts = messageContent.split(/[\n*:]/).map((part) => part.trim());
-      const unitFromResponse = parts[11];
-      setNewItemName(parts[2]);
-      setNewItemExpiration(parts[5]);
-      setNewItemUnit(unitFromResponse);
-      setNewItemQuantity(parseFloat(parts[8]) || 1);
-      if (unitFromResponse !== "" && !units.includes(unitFromResponse)) {
-        setUnits([...units, unitFromResponse]);
-      }
-    } else {
+    if (!imageSrc) {
       alert("No image provided for analysis.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl: imageSrc }),
+      });
+      console.log(res);
+      if (!res.ok) {
+        console.error("Analyze failed");
+        alert("Failed to analyze image.");
+        return;
+      }
+
+      const { name, expiration, quantity, unit } = await res.json();
+
+      setNewItemName(name || "");
+      setNewItemExpiration(expiration || "");
+      setNewItemQuantity(parseFloat(quantity) || 1);
+
+      if (unit) {
+        setNewItemUnit(unit);
+        setUnits((prev) => (prev.includes(unit) ? prev : [...prev, unit]));
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Analyze request error.");
     }
   };
 
