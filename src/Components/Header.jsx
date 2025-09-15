@@ -5,7 +5,7 @@ import { setUser } from "../store/usersSlice";
 import "./Header.css"
 
 function Header(){
-    const dispatch = useDispatch
+    const dispatch = useDispatch()
     const handleSignOut = () => {
         if(confirm("Are you sure you want to sign out?")){
             signOut(auth).then(() => {
